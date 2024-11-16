@@ -1,0 +1,22 @@
+{
+    "name": "relnaggar/veloz",
+    "description": "Description",
+    "type": "library",
+    "require": {
+        "php-di/php-di": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Relnaggar\\Veloz\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ramsey El-Naggar",
+            "email": "ramsey.el-naggar@outlook.com",
+            "role": "Developer",
+            "homepage": "https://rmsy.me"
+        }
+    ],
+    "license": "MIT"
+}
