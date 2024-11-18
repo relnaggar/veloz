@@ -8,7 +8,7 @@ class Config
 {
   // singleton pattern
 
-  private static $instance = null;
+  private static ?Config $instance = null;
 
   private function __construct() {}
 

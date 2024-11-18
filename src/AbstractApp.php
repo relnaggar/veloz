@@ -23,7 +23,7 @@ use function DI\{
 
 abstract class AbstractApp
 {
-  protected Container $container;
+  private static ?Container $container = null;
 
   public function __construct()
   {
@@ -65,7 +65,18 @@ abstract class AbstractApp
 
     $containerBuilder = new ContainerBuilder();
     $containerBuilder->addDefinitions($diDefinitions);
-    $this->container = $containerBuilder->build();
+    self::$container = $containerBuilder->build();
+  }
+
+  /**
+   * Returns the dependency injection container (PHP-DI Container).
+   */
+  public static function getContainer(): Container
+  {
+    if (self::$container === null) {
+      throw new \Error('Container has not been initialized');
+    }
+    return self::$container;
   }
 
   /**
@@ -112,7 +123,7 @@ abstract class AbstractApp
     string $serverRequestPath,
     string $httpMethod
   ): ControllerAction {
-    $router = $this->container->get(RouterInterface::class);
+    $router = self::$container->get(RouterInterface::class);
     return $router->route($serverRequestPath, $httpMethod);
   }
 
@@ -134,20 +145,16 @@ abstract class AbstractApp
     // get the HTTP method e.g. GET, POST, PUT, DELETE
     $httpMethod = $_SERVER['REQUEST_METHOD'];
 
-    // get the controller and action as defined in the project's App.php
+    // get the controller and action to call
     $controllerAction = $this->route($serverRequestPath, $httpMethod);
-    $controllerClass = $controllerAction->controllerClass;
-    $action = $controllerAction->action;
-    $params = $controllerAction->params;
-
-    // create the controller
-    $controller = $this->container->get($controllerClass);
 
     // call the controller action
-    $page = $controller?->$action(...$params);
+    $page = $controllerAction->getPage();
+
     // make sure the controller action returns a Page object
     if (! $page instanceof Page) {
-      $controllerClass = get_class($controller);
+      $controllerClass = $controllerAction->controllerClass;
+      $action = $controllerAction->action;
       throw new \Error("Controller action $controllerClass->$action must return
         an instance of \\Relnaggar\Veloz\\Views\\Page");
     }

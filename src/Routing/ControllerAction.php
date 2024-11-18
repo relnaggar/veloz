@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Relnaggar\Veloz\Routing;
 
-use Relnaggar\Veloz\Controllers\AbstractController;
+use Relnaggar\Veloz\{
+  Controllers\AbstractController,
+  Views\Page,
+  AbstractApp,
+};
 
 class ControllerAction
 {
@@ -34,5 +38,17 @@ class ControllerAction
     $this->controllerClass = $controllerClass;
     $this->action = $action;
     $this->params = $params;
+  }
+
+  /**
+   * Calls the controller and action, passing the parameters, and returns the
+   * resulting Page object.
+   */
+  public function getPage(): Page
+  {
+    $container = AbstractApp::getContainer();
+    $controller = $container->get($this->controllerClass);
+    $action = $this->action;
+    return $controller->$action(...$this->params);
   }
 }

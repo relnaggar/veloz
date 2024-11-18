@@ -28,4 +28,10 @@ interface RouterInterface
    * @return bool true if the path is a valid route, false otherwise
    */
   public function hasPath(string $serverRequestPath): bool;
+
+  /**
+   * Returns the controller and action to be called when no route matches the
+   * given path.
+   */
+  public function getPageNotFound(): ControllerAction;
 }

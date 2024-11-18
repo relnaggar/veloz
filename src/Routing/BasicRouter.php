@@ -89,4 +89,9 @@ class BasicRouter implements RouterInterface
       }
     }
   }
+
+  public function getPageNotFound(): ControllerAction
+  {
+    return $this->pageNotFound;
+  }
 }
