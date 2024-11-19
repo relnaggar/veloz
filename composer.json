@@ -1,6 +1,6 @@
 {
     "name": "relnaggar/veloz",
-    "description": "Description",
+    "description": "⚡ Veloz: Yet Another PHP Mini-Framework",
     "type": "library",
     "require": {
         "php-di/php-di": "^7.0"
