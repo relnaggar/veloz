@@ -9,8 +9,8 @@ namespace Relnaggar\Veloz\Controllers;
  */
 class RedirectController extends AbstractController
 {
-  public function doRedirect(string $url)
+  public function doRedirect(string $url, int $statusCode): void
   {
-    $this->redirect($url);
+    $this->redirect($url, $statusCode);
   }
 }

@@ -7,6 +7,7 @@ namespace Example;
 use Relnaggar\Veloz\{
   AbstractApp,
   Routing\ControllerAction,
+  Routing\Redirect,
 };
 
 class App extends AbstractApp
@@ -15,6 +16,14 @@ class App extends AbstractApp
     string $path,
     string $method,
   ): ControllerAction {
-    return new ControllerAction(Controllers\Home::class, 'index');
+    if ($path === '/') {
+      return new ControllerAction(Controllers\Home::class, 'index');
+    } else if ($path === '/temporary-redirect') {
+      return new Redirect('https://google.com', 302);
+    } else if ($path === '/permanent-redirect') {
+      return new Redirect('https://google.com', 301);
+    } else {
+      return new ControllerAction(Controllers\Home::class, 'notFound');
+    }
   }
 }

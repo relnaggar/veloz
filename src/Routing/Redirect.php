@@ -12,9 +12,13 @@ class Redirect extends ControllerAction
    * Create a new Redirect instance that redirects to the specified URL.
    *
    * @param string $url The URL to redirect to.
+   * @param int $statusCode The HTTP status code to use for the redirect.
    */
-  public function __construct(string $url)
+  public function __construct(string $url, int $statusCode = 302)
   {
-    parent::__construct(RedirectController::class, 'doRedirect', [$url]);
+    parent::__construct(RedirectController::class, 'doRedirect', [
+      $url,
+      $statusCode
+    ]);
   }
 }

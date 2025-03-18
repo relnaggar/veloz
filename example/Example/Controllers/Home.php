@@ -21,4 +21,14 @@ class Home extends AbstractController
       ]
     );
   }
+
+  public function notFound(): Page
+  {
+    return $this->getPage(
+      __FUNCTION__,
+      [
+        'title' => 'Not Found',
+      ]
+    );
+  }
 }

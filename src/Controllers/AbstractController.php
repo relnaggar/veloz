@@ -125,10 +125,19 @@ abstract class AbstractController
    * Redirect the user to the specified path.
    *
    * @param string $path The path to redirect the user to.
+   * @param int $statusCode The HTTP status code to use for the redirect.
    */
-  public function redirect(string $path): void
+  public function redirect(string $path, int $statusCode): void
   {
-    header('Location: ' . $path);
+    if ($statusCode < 300 || $statusCode > 399) {
+      throw new \Error('Invalid status code for redirect.');
+    }
+
+    if ($statusCode === 302) {
+      header('Location: ' . $path);
+    } else {
+      header('Location: ' . $path, true, $statusCode);
+    }
     exit();
   }
 
