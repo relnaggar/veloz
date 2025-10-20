@@ -24,6 +24,14 @@ class Page
     return $this->templateVars;
   }
 
+  public static function empty(): Page
+  {
+    $obj = new Page();
+    $obj->htmlContent = '';
+    $obj->templateVars = [];
+    return $obj;
+  }
+
   /**
    * Create a new Page instance with the HTML content directly specified.
    *
