@@ -65,7 +65,7 @@ abstract class AbstractController
    * Additional variables can then be injected which will be available to both
    * the layout and body templates.
    *
-   * @param string $bodyTemplatePath The path to the body template file,
+   * @param string $relativeBodyTemplatePath The path to the body template file,
    *   relative to this controller's template directory, which is a subdirectory
    *   of the configured template root directory and named after the controller.
    *   Given without the file extension.
@@ -83,15 +83,20 @@ abstract class AbstractController
    * @param array $sections An array of SectionInterface instances to inject
    *   into the template. Each section will have its HTML content loaded from
    *   the template file specified by the SectionInterface implementation.
+   * @param string $fullBodyTemplatePath The full path to the body template
+   *   file. If specified, this is used instead of loading the body template
+   *   from this controller's template directory. Cannot be used together with
+   *   $relativeBodyTemplatePath.
    * @return Page A new Page instance with the HTML content loaded from the
    *   layout file, the body content injected, and the specified variables
    *   injected.
    */
   public function getPage(
-    string $bodyTemplatePath = '',
+    string $relativeBodyTemplatePath = '',
     array $templateVars = [],
     string $layoutTemplatePath = '',
     array $sections = [],
+    string $fullBodyTemplatePath = '',
   ): Page {
     // apply decorators
     $templateVars = $this->applyDecorators($templateVars);
@@ -113,9 +118,22 @@ abstract class AbstractController
       $templateVars['sections'] = $sections;
     }
 
+    if (!empty($fullBodyTemplatePath) && !empty($relativeBodyTemplatePath)) {
+      throw new \Error(
+        'Cannot specify both fullBodyTemplatePath and '
+        . 'relativeBodyTemplatePath.'
+      );
+    } else if (!empty($fullBodyTemplatePath)) {
+      // load the body template content from the full path
+      $bodyTemplatePath = $fullBodyTemplatePath;
+    } else {
+      // load the body template content from the controller's template directory
+      $bodyTemplatePath = "$controllerName/$relativeBodyTemplatePath";
+    }
+
     // build the page
     return Page::withLayout(
-      "$controllerName/$bodyTemplatePath",
+      $bodyTemplatePath,
       $templateVars,
       $layoutTemplatePath
     );
