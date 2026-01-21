@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Relnaggar\Veloz\Controllers;
 
+use ReflectionClass;
 use Relnaggar\Veloz\{
   Decorators\DecoratorInterface,
   Config,
@@ -35,7 +36,7 @@ abstract class AbstractController
    */
   public function getControllerName(): string
   {
-    return (new \ReflectionClass($this))->getShortName();
+    return (new ReflectionClass($this))->getShortName();
   }
 
   /**
@@ -46,7 +47,7 @@ abstract class AbstractController
    *   extension.
    * @return string The full path to the template file.
    */
-  public function getFullTemplateFilePath($relativeTemplatePath): string
+  public function getFullTemplateFilePath(string $relativeTemplatePath): string
   {
     $config = Config::getInstance();
     $sourceDirectory = $config->get('sourceDirectory');
@@ -174,4 +175,12 @@ abstract class AbstractController
     }
     return $templateVars;
   }
+
+  /**
+   * Hook method called before each action method is executed.
+   * Can be overridden in subclasses to perform common setup tasks.
+   * 
+   * @param string $action The action method to be executed.
+   */
+  public function beforeAction(string $action): void {}
 }

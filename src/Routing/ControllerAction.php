@@ -41,7 +41,8 @@ class ControllerAction
   }
 
   /**
-   * Calls the controller and action, passing the parameters, and returns the
+   * Calls the controller's beforeAction() hook passing the action, and then
+   * calls the controller and action, passing the parameters, and returns the
    * resulting Page object.
    */
   public function getPage(): Page
@@ -49,6 +50,7 @@ class ControllerAction
     $container = AbstractApp::getContainer();
     $controller = $container->get($this->controllerClass);
     $action = $this->action;
+    $controller->beforeAction($action);
     return $controller->$action(...$this->params);
   }
 }
