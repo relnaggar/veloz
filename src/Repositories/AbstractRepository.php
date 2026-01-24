@@ -132,4 +132,45 @@ abstract class AbstractRepository
     $stmt->execute($values);
     return $this->pdo->lastInsertId();
   }
+
+  /**
+   * Update a record in the table.
+   * 
+   * @param mixed $record The record object or associative array to update.
+   * @param string $pkColumn The primary key column name. Default is 'id'.
+   * @return void
+   * @throws PDOException If there is a database error.
+   */
+  public function update(mixed $record, string $pkColumn = 'id'): void
+  {
+    $setClauses = [];
+    $values = [];
+    if (is_array($record)) {
+      foreach ($record as $column => $value) {
+        if ($column === $pkColumn) {
+          continue;
+        }
+        $setClauses[] = "{$column} = :{$column}";
+        $values[$column] = $value == '' ? null : $value;
+      }
+    } else {
+      foreach (get_object_vars($record) as $column => $value) {
+        if ($column === $pkColumn) {
+          continue;
+        }
+        $setClauses[] = "{$column} = :{$column}";
+        $values[$column] = $value == '' ? null : $value;
+      }
+    }
+    $values['pkValue'] = is_array($record) ?
+      $record[$pkColumn] :
+      $record->{$pkColumn};
+    $setStr = implode(', ', $setClauses);
+    $stmt = $this->pdo->prepare(<<<SQL
+      UPDATE {$this->tableName}
+      SET {$setStr}
+      WHERE {$pkColumn} = :pkValue
+    SQL);
+    $stmt->execute($values);
+  }
 }
