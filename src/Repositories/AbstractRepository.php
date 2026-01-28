@@ -173,4 +173,18 @@ abstract class AbstractRepository
     SQL);
     $stmt->execute($values);
   }
+
+  /**
+   * Delete all records from the table.
+   * 
+   * @return void
+   * @throws PDOException If there is a database error.
+   */
+  public function deleteAll(): void
+  {
+    $stmt = $this->pdo->prepare(<<<SQL
+      DELETE FROM {$this->tableName}
+    SQL);
+    $stmt->execute();
+  }
 }
